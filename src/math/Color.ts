@@ -1,3 +1,7 @@
+interface ToHexOptions {
+  prefix?: boolean;
+}
+
 export default class Color {
   r: number;
   g: number;
@@ -9,7 +13,7 @@ export default class Color {
     this.b = b;
   }
 
-  toHex(): string {
+  toHex(options: ToHexOptions = {}): string {
     const [r, g, b] = [
       Math.floor(this.r * 255),
       Math.floor(this.g * 255),
@@ -20,7 +24,11 @@ export default class Color {
       g.toString(16).padStart(2, '0'),
       b.toString(16).padStart(2, '0'),
     ];
-    return `${rs}${gs}${bs}`;
+    if (options.prefix) {
+      return `#${rs}${gs}${bs}`;
+    } else {
+      return `${rs}${gs}${bs}`;
+    }
   }
 }
 

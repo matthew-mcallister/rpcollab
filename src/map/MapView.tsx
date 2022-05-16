@@ -20,7 +20,7 @@ export default function MapView({mapCanvas}: MapViewProps) {
 
   return (
     <>
-      <canvas ref={canvas} />
+      <canvas width={1920} height={1080} ref={canvas} />
     </>
   );
 }
