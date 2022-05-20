@@ -16,6 +16,17 @@ export default function MapView({mapCanvas}: MapViewProps) {
   useEffect(() => {
     mapCanvas.attach(canvas.current);
     mapCanvas.renderLoop();
+  }, [mapCanvas]);
+
+  function handleResize(entries: ResizeObserverEntry[]) {
+    const entry = entries[0];
+    canvas.current.width = entry.contentRect.width;
+    canvas.current.height = entry.contentRect.height;
+  }
+
+  useEffect(() => {
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(canvas.current);
   }, []);
 
   return (

@@ -19,12 +19,20 @@ export class Xform2 {
     this.angle = angle;
   }
 
-  public mul(v: Vector2): Vector2 {
+  public apply(v: Vector2): Vector2 {
     return new Vector2(
       this.offset.x +
         this.scale * (v.x * Math.cos(this.angle) - v.y * Math.sin(this.angle)),
       this.offset.y +
         this.scale * (v.x * Math.sin(this.angle) + v.y * Math.cos(this.angle))
+    );
+  }
+
+  public mul(xform: Xform2): Xform2 {
+    return new Xform2(
+      this.apply(xform.offset),
+      this.scale * xform.scale,
+      this.angle + xform.angle
     );
   }
 
