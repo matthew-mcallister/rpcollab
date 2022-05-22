@@ -25,6 +25,17 @@ export class ControllerState {
   }
 
   /**
+   * Computes an AABB to use for culling grid cells not in view of the
+   * camera. Assumes the camera is not rotated at all.
+   */
+  public cameraAabb(): [Vector2, Vector2] {
+    const xform = this.canvasToWorld();
+    const ul = xform.apply(new Vector2(0, 0));
+    const lr = xform.apply(new Vector2(this.canvas.width, this.canvas.height));
+    return [ul, lr];
+  }
+
+  /**
    * Computes the transform fron camera space to canvas space.
    *
    * Unlike in 3D, there is no perspective transform and no clip space.

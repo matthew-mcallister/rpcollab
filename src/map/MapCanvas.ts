@@ -90,6 +90,37 @@ export default class MapCanvas {
     }
   }
 
+  /**
+   * Computes a range of the grid to draw based on the current camera,
+   * noticeably improving performance when zoomed in.
+   *
+   * Returns integer extends in the form [min, max]. If the camera is
+   * completely off screen, max may be less than min.
+   */
+  cullingRange(): [Vector2, Vector2] {
+    const [ul, lr] = this.state.cameraAabb();
+    const dx = this.state.scale * (1 + Math.cos(Math.PI / 3));
+    const dy = 2 * this.state.scale * Math.sin(Math.PI / 3);
+    const min = new Vector2(
+      Math.floor(ul.x / dx) - 1,
+      Math.floor(ul.y / dy) - 2
+    );
+    const max = new Vector2(Math.ceil(lr.x / dx) + 1, Math.ceil(lr.y / dy) + 2);
+
+    // We clamp to the map dimensions to avoid out-of-bounds access.
+    // This doesn't clamp max if it is negative or min if it is larger
+    // than the map dimensions.
+    const [min_i, max_i] = [
+      Math.max(min.x, 0),
+      Math.min(max.x + 1, this.map.width),
+    ];
+    const [min_j, max_j] = [
+      Math.max(min.y, 0),
+      Math.min(max.y + 1, this.map.height),
+    ];
+    return [new Vector2(min_i, min_j), new Vector2(max_i, max_j)];
+  }
+
   public drawGrid(): void {
     const r = this.state.scale;
     const h = 2 * r * Math.sin(Math.PI / 3);
@@ -98,19 +129,18 @@ export default class MapCanvas {
     const dy = h;
 
     const x_0 = r;
-    for (let j = 0; j < this.map.width; j++) {
+    const [min, max] = this.cullingRange();
+    for (let j = min.x; j < max.x; j++) {
       const y_0 = j % 2 === 1 ? h : h / 2;
-      for (let i = 0; i < this.map.height; i++) {
+      for (let i = min.y; i < max.y; i++) {
+        const p = new Vector2(x_0 + j * dx, y_0 + i * dy);
         const cell = this.map.cells[j][i];
-
         let color = cell.color;
         if (this.state.highlightedCell === cell) {
           color = color.lighten(0.2);
         }
 
         const strokeColor = new Color(0, 0, 0);
-        const p = new Vector2(x_0 + j * dx, y_0 + i * dy);
-
         this.drawHex(p, r, color, strokeColor);
       }
     }

@@ -41,4 +41,8 @@ export class Vector2 {
       this.x * Math.sin(angle) + this.y * Math.cos(angle)
     );
   }
+
+  public inBounds(ul: Vector2, lr: Vector2): boolean {
+    return this.x >= ul.x && this.x <= lr.x && this.y >= ul.y && this.y <= lr.y;
+  }
 }
