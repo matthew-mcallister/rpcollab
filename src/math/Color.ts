@@ -31,6 +31,27 @@ export default class Color {
     }
   }
 
+  public static fromHex(hex: string): Color {
+    if (hex.startsWith('#')) {
+      hex = hex.slice(1);
+    }
+    if (hex.length == 3) {
+      const [r, g, b] = [
+        parseInt(hex[0], 16),
+        parseInt(hex[1], 16),
+        parseInt(hex[2], 16),
+      ];
+      return new Color(r / 15, g / 15, b / 15);
+    } else {
+      const [r, g, b] = [
+        parseInt(hex.slice(0, 2), 16),
+        parseInt(hex.slice(2, 4), 16),
+        parseInt(hex.slice(4, 6), 16),
+      ];
+      return new Color(r / 255, g / 255, b / 255);
+    }
+  }
+
   public toHsv(): [number, number, number] {
     const [r, g, b] = [this.r, this.g, this.b];
     const max = Math.max(r, g, b);

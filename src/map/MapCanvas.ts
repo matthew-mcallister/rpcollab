@@ -1,8 +1,9 @@
 import Color from '../math/Color';
 import {Vector2} from '../math/Vector';
 import {Xform2} from '../math/Xform';
-import {ControllerState, MapController} from './Controller';
+import {MapController} from './Controller';
 import MapModel from './MapModel';
+import MapEditorState from './State';
 
 /**
  * Canvas-based controller which draws the map and processes interaction.
@@ -14,15 +15,15 @@ import MapModel from './MapModel';
 export default class MapCanvas {
   private map: MapModel;
   private ctx: CanvasRenderingContext2D | null = null;
-  private state: ControllerState;
+  private state: MapEditorState;
   private controller: MapController;
 
   // Memoized variable; not real state.
   private xform: Xform2;
 
-  constructor(map: MapModel) {
-    this.map = map;
-    this.state = new ControllerState(map);
+  constructor(state: MapEditorState) {
+    this.state = state;
+    this.map = state.map;
     this.controller = new MapController(this.state);
   }
 
@@ -148,7 +149,9 @@ export default class MapCanvas {
 
   public render(): void {
     const canvas = this.ctx.canvas;
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    this.ctx.fillStyle = '#444';
+    this.ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     this.xform = this.state.worldToCanvas();
     this.drawGrid();

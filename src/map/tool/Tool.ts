@@ -1,5 +1,5 @@
-import {ControllerState} from '../Controller';
+import MapEditorState from '../State';
 
 export default interface Tool {
-  apply(state: ControllerState): void;
+  apply(state: MapEditorState): void;
 }

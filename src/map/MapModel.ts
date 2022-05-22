@@ -9,7 +9,7 @@ export class Cell {
   public readonly y: number;
   public color: Color;
 
-  constructor(x: number, y: number, color: Color = new Color(0.5, 0.5, 0.5)) {
+  constructor(x: number, y: number, color: Color = new Color(1, 1, 1)) {
     this.x = x;
     this.y = y;
     this.color = color;
