@@ -2,6 +2,7 @@ import {Camera} from '../math/Camera';
 import {Vector2} from '../math/Vector';
 import {Xform2} from '../math/Xform';
 import MapModel, {Cell} from './MapModel';
+import Toolbox from './tool/Toolbox';
 
 /**
  * This represents the main state of the map canvas controller. Multiple
@@ -15,10 +16,13 @@ export class ControllerState {
   public canvas: HTMLCanvasElement | null = null;
   public scale: number = 10;
 
-  // Actual state
+  // Map view state
   public camera = new Camera();
   public cursorWorldPos = new Vector2();
   public highlightedCell: Cell | null = null;
+
+  // Tool state
+  public toolbox = new Toolbox();
 
   constructor(map: MapModel) {
     this.map = map;
@@ -134,8 +138,33 @@ class CameraController extends Controller {
  * in it.
  */
 class CursorController extends Controller {
+  clicking: boolean;
+
   constructor(state: ControllerState) {
     super(state);
+  }
+
+  private applyTool() {
+    if (this.clicking) {
+      this.state.toolbox.currentTool().apply(this.state);
+    }
+  }
+
+  public onMouseDown(e: MouseEvent): void {
+    if (e.button === 0) {
+      this.clicking = true;
+    }
+    this.applyTool();
+  }
+
+  public onMouseUp(e: MouseEvent): void {
+    if (e.button === 0) {
+      this.clicking = false;
+    }
+  }
+
+  public onMouseLeave(e: MouseEvent): void {
+    this.clicking = false;
   }
 
   public onMouseMove(event: MouseEvent): void {
@@ -144,6 +173,7 @@ class CursorController extends Controller {
     this.state.highlightedCell = this.state.map.cellAtPosition(
       this.state.cursorWorldPos.mul(1 / this.state.scale)
     );
+    this.applyTool();
   }
 }
 
