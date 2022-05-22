@@ -85,13 +85,13 @@ export default class MapCanvas {
     ]);
 
     this.ctx.fill();
-    if (strokeColor) {
+    if (strokeColor && this.state.camera.zoom < 2.5) {
       this.ctx.stroke();
     }
   }
 
   public drawGrid(): void {
-    const r = 10;
+    const r = this.state.scale;
     const h = 2 * r * Math.sin(Math.PI / 3);
 
     const dx = r * (1 + Math.cos(Math.PI / 3));
@@ -103,25 +103,25 @@ export default class MapCanvas {
       for (let i = 0; i < this.map.height; i++) {
         const cell = this.map.cells[j][i];
 
+        let color = cell.color;
+        if (this.state.highlightedCell === cell) {
+          color = color.lighten(0.2);
+        }
+
         const strokeColor = new Color(0, 0, 0);
         const p = new Vector2(x_0 + j * dx, y_0 + i * dy);
 
-        this.drawHex(p, r, cell.color, strokeColor);
+        this.drawHex(p, r, color, strokeColor);
       }
     }
-  }
-
-  public updateXform(): void {
-    this.xform = this.state.worldToCanvas();
   }
 
   public render(): void {
     const canvas = this.ctx.canvas;
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    this.updateXform();
+    this.xform = this.state.worldToCanvas();
     this.drawGrid();
-    this.drawCursor();
   }
 
   public renderLoop(): void {

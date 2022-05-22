@@ -3,9 +3,9 @@ interface ToHexOptions {
 }
 
 export default class Color {
-  r: number;
-  g: number;
-  b: number;
+  public readonly r: number;
+  public readonly g: number;
+  public readonly b: number;
 
   constructor(r: number, g: number, b: number) {
     this.r = r;
@@ -13,7 +13,7 @@ export default class Color {
     this.b = b;
   }
 
-  toHex(options: ToHexOptions = {}): string {
+  public toHex(options: ToHexOptions = {}): string {
     const [r, g, b] = [
       Math.floor(this.r * 255),
       Math.floor(this.g * 255),
@@ -30,12 +30,40 @@ export default class Color {
       return `${rs}${gs}${bs}`;
     }
   }
+
+  public toHsv(): [number, number, number] {
+    const [r, g, b] = [this.r, this.g, this.b];
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const d = max - min;
+    const h =
+      max === min
+        ? 0
+        : max === r
+        ? (60 * ((g - b) / d)) % 360
+        : max === g
+        ? 60 * ((b - r) / d) + 120
+        : max === b
+        ? 60 * ((r - g) / d) + 240
+        : 0;
+    const s = max === 0 ? 0 : d / max;
+    const v = max;
+    return [h, s, v];
+  }
+
+  public lighten(amount: number): Color {
+    return new Color(
+      this.r + amount * (1 - this.r),
+      this.g + amount * (1 - this.g),
+      this.b + amount * (1 - this.b)
+    );
+  }
 }
 
 export class ColorHsv {
-  h: number;
-  s: number;
-  v: number;
+  public h: number;
+  public s: number;
+  public v: number;
 
   constructor(h: number, s: number, v: number) {
     this.h = h;
@@ -43,7 +71,7 @@ export class ColorHsv {
     this.v = v;
   }
 
-  toRgb(): Color {
+  public toRgb(): Color {
     let r: number = 0;
     let g: number = 0;
     let b: number = 0;

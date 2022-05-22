@@ -1,4 +1,5 @@
 import Color from '../math/Color';
+import {Vector2} from '../math/Vector';
 
 /**
  * A hex cell in a map.
@@ -9,6 +10,8 @@ export class Cell {
   public color: Color;
 
   constructor(x: number, y: number, color: Color = new Color(0.5, 0.5, 0.5)) {
+    this.x = x;
+    this.y = y;
     this.color = color;
   }
 }
@@ -33,5 +36,30 @@ export default class MapModel {
         this.cells[x][y] = new Cell(x, y);
       }
     }
+  }
+
+  public coordsAtPosition(pos: Vector2): Vector2 {
+    // Caution: slick math ahead
+    const h = Math.sin(Math.PI / 3);
+    const r = pos.sub(new Vector2(0, h));
+    const [a, b] = [r.x, r.y / Math.sqrt(3)];
+    const [u, v] = [Math.floor(a + b), Math.floor(a - b)];
+    const i = Math.floor((u + v) / 3);
+
+    const k = Math.floor(pos.y / h) - Math.floor(i % 2);
+    const j = Math.floor(k / 2);
+
+    return new Vector2(i, j);
+  }
+
+  /**
+   * Finds which cell, if any, is under the given point.
+   *
+   * It is assumed that the radius of a cell is 1 and that (0, 0) is the
+   * upper-left corner of the bounding map rectangle.
+   */
+  public cellAtPosition(pos: Vector2): Cell | null {
+    const p = this.coordsAtPosition(pos);
+    return (this.cells[p.x] || [])[p.y] || null;
   }
 }

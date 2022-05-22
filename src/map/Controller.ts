@@ -1,7 +1,7 @@
 import {Camera} from '../math/Camera';
 import {Vector2} from '../math/Vector';
 import {Xform2} from '../math/Xform';
-import MapModel from './MapModel';
+import MapModel, {Cell} from './MapModel';
 
 /**
  * This represents the main state of the map canvas controller. Multiple
@@ -13,10 +13,12 @@ export class ControllerState {
   // Inputs to the controllers
   public readonly map: MapModel;
   public canvas: HTMLCanvasElement | null = null;
+  public scale: number = 10;
 
   // Actual state
   public camera = new Camera();
   public cursorWorldPos = new Vector2();
+  public highlightedCell: Cell | null = null;
 
   constructor(map: MapModel) {
     this.map = map;
@@ -37,7 +39,7 @@ export class ControllerState {
 
   /**
    * Transform from world coordinates to screen coordinates via the
-   * current cameea.
+   * current camera.
    */
   public worldToCanvas(): Xform2 {
     const camera = this.camera.xform();
@@ -61,10 +63,12 @@ export class Controller {
     this.state = state;
   }
 
+  public onMouseEnter(e: MouseEvent): void {}
+  public onMouseLeave(e: MouseEvent): void {}
   public onMouseDown(e: MouseEvent): void {}
   public onMouseUp(e: MouseEvent): void {}
   public onMouseMove(e: MouseEvent): void {}
-  public onWheel(event: WheelEvent): void {}
+  public onWheel(e: WheelEvent): void {}
 }
 
 class CameraController extends Controller {
@@ -77,6 +81,10 @@ class CameraController extends Controller {
   /** Factor to convert mouse position to screen position. */
   zoomFactor(): number {
     return (2 * window.devicePixelRatio) / this.state.camera.zoom;
+  }
+
+  public onMouseLeave(event: MouseEvent): void {
+    this.dragging = false;
   }
 
   public onMouseDown(event: MouseEvent): void {
@@ -101,7 +109,6 @@ class CameraController extends Controller {
   }
 
   public onWheel(event: WheelEvent): void {
-    // TODO: Probably shouldn't use FP math for this.
     // TODO: This sucks on trackpad.
     if (event.deltaY < 0) {
       this.state.camera.zoom *= (16 - 1) / 16;
@@ -123,6 +130,9 @@ class CursorController extends Controller {
   public onMouseMove(event: MouseEvent): void {
     const pos = new Vector2(event.offsetX, event.offsetY);
     this.state.cursorWorldPos = this.state.canvasToWorld().apply(pos);
+    this.state.highlightedCell = this.state.map.cellAtPosition(
+      this.state.cursorWorldPos.mul(1 / this.state.scale)
+    );
   }
 }
 
@@ -142,6 +152,16 @@ export class MapController {
   public attach(canvas: HTMLCanvasElement): void {
     const controller = this;
 
+    function mouseenter(event: MouseEvent): void {
+      for (const cnt of controller.controllers()) {
+        cnt.onMouseEnter(event);
+      }
+    }
+    function mouseleave(event: MouseEvent): void {
+      for (const cnt of controller.controllers()) {
+        cnt.onMouseLeave(event);
+      }
+    }
     function mousedown(event: MouseEvent) {
       for (const cnt of controller.controllers()) {
         cnt.onMouseDown(event);
@@ -163,12 +183,16 @@ export class MapController {
       }
     }
 
+    canvas.addEventListener('mouseenter', mouseenter);
+    canvas.addEventListener('mouseleave', mouseleave);
     canvas.addEventListener('mousedown', mousedown);
     canvas.addEventListener('mouseup', mouseup);
     canvas.addEventListener('mousemove', mousemove);
     canvas.addEventListener('wheel', wheel);
 
     controller.detach = () => {
+      canvas.removeEventListener('mouseenter', mouseenter);
+      canvas.removeEventListener('mouseleave', mouseleave);
       canvas.removeEventListener('mousedown', mousedown);
       canvas.removeEventListener('mouseup', mouseup);
       canvas.removeEventListener('mousemove', mousemove);
