@@ -15,7 +15,6 @@ export default function ColorPicker(props: ColorPickerProps) {
   }
   return (
     <>
-      <label style={{paddingRight: '10px'}}>Color:</label>
       <input
         type="color"
         value={props.color.toHex({prefix: true})}

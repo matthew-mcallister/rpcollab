@@ -4,6 +4,7 @@ import {PaintbrushUi} from './tool/Paintbrush';
 import './Sidebar.css';
 import TabColumn, {TabDef} from './TabColumn';
 import {faMap, faPaintbrush} from '@fortawesome/free-solid-svg-icons';
+import MapSettingsUi from './MapSettings';
 
 interface SidebarProps {
   tabState: MapTabState;
@@ -13,6 +14,8 @@ type Tab = 'map-settings' | 'paintbrush';
 
 export default function Sidebar(props: SidebarProps) {
   const [selected, setSelected] = useState<Tab>('paintbrush');
+
+  const state = props.tabState.state;
 
   const tabs: TabDef<Tab>[] = [
     {
@@ -34,9 +37,9 @@ export default function Sidebar(props: SidebarProps) {
         {(() => {
           switch (selected) {
             case 'map-settings':
-              return <div></div>;
+              return <MapSettingsUi state={state} />;
             case 'paintbrush':
-              return <PaintbrushUi state={props.tabState.state} />;
+              return <PaintbrushUi state={state} />;
           }
         })()}
       </div>

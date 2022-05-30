@@ -27,13 +27,20 @@ export default class MapModel {
   public cells: Cell[][];
 
   constructor(width: number, height: number) {
+    this.width = this.height = 0;
+    this.cells = [[]];
+    this.resize(width, height);
+  }
+
+  resize(width: number, height: number) {
     this.width = width;
     this.height = height;
-    this.cells = [];
+    this.cells.length = width;
     for (let x = 0; x < width; x++) {
-      this.cells[x] = [];
+      this.cells[x] = this.cells[x] || [];
+      this.cells[x].length = height;
       for (let y = 0; y < height; y++) {
-        this.cells[x][y] = new Cell(x, y);
+        this.cells[x][y] = this.cells[x][y] || new Cell(x, y);
       }
     }
   }

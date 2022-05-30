@@ -23,7 +23,11 @@ export default function TabColumn<K>(props: TabColumnProps<K>) {
           className += ' Selected';
         }
         return (
-          <div className={className} onClick={() => props.onChange(tab.name)}>
+          <div
+            className={className}
+            onClick={() => props.onChange(tab.name)}
+            title={tab.tooltip}
+          >
             <FontAwesomeIcon className="Icon" icon={tab.icon} />
           </div>
         );
