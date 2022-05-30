@@ -1,26 +1,15 @@
-import {useRef, useState} from 'react';
+import {useState} from 'react';
 import './App.css';
-import MapCanvas from './map/MapCanvas';
+import MapEditor from './map/MapEditor';
 import MapModel from './map/MapModel';
-import MapView from './map/MapView';
-import MapEditorState from './map/State';
-import {PaintbrushUi} from './map/tool/Paintbrush';
+import MapTabState from './map/MapTab';
 
 function App() {
-  const [map, setMap] = useState(() => new MapModel(100, 100));
-  const mapEditorState = useRef(new MapEditorState(map));
-  const [mapCanvas, setMapCanvas] = useState(
-    () => new MapCanvas(mapEditorState.current)
-  );
+  const [map, setMap] = useState(() => new MapTabState(new MapModel(100, 100)));
 
   return (
     <div className="App">
-      <div className="map-area">
-        <MapView mapCanvas={mapCanvas} />
-      </div>
-      <div className="sidebar">
-        <PaintbrushUi state={mapEditorState.current} />
-      </div>
+      <MapEditor map={map} />
     </div>
   );
 }

@@ -13,9 +13,10 @@ import MapEditorState from './State';
 // TODO: Probably should rename something like MapCanvasView because
 // it really only does drawing.
 export default class MapCanvas {
-  private map: MapModel;
+  public map: MapModel;
+  public state: MapEditorState;
+
   private ctx: CanvasRenderingContext2D | null = null;
-  private state: MapEditorState;
   private controller: MapController;
 
   // Memoized variable; not real state.

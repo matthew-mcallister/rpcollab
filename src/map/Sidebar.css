@@ -1,0 +1,24 @@
+.Sidebar {
+  height: 100%;
+  width: 100%;
+  grid-template-columns: 40px 1fr;
+  display: grid;
+}
+
+.TabColumn {
+  height: 100%;
+  grid-column: 1 / 2;
+  grid-row: 1;
+  background-color: #222;
+  color: #fff;
+}
+
+.ContentColumn {
+  height: 100%;
+  grid-column: 2 / 2;
+  grid-row: 1;
+  background-color: #333;
+  color: #fff;
+  padding: 30px;
+  text-align: left;
+}
