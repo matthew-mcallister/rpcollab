@@ -1,9 +1,9 @@
 import {useState} from 'react';
 import MapTabState from './MapTab';
 import {PaintbrushUi} from './tool/Paintbrush';
-
 import './Sidebar.css';
 import TabColumn, {TabDef} from './TabColumn';
+import {faMap, faPaintbrush} from '@fortawesome/free-solid-svg-icons';
 
 interface SidebarProps {
   tabState: MapTabState;
@@ -17,12 +17,12 @@ export default function Sidebar(props: SidebarProps) {
   const tabs: TabDef<Tab>[] = [
     {
       name: 'map-settings',
-      icon: 'asdf',
+      icon: faMap,
       tooltip: 'Map settings',
     },
     {
       name: 'paintbrush',
-      icon: 'asdf',
+      icon: faPaintbrush,
       tooltip: 'Paintbrush',
     },
   ];

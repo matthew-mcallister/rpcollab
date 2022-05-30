@@ -1,8 +1,10 @@
+import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import './TabColumn.css';
 
 export interface TabDef<K> {
   name: K;
-  icon?: any;
+  icon?: IconDefinition;
   tooltip?: string;
 }
 
@@ -21,10 +23,9 @@ export default function TabColumn<K>(props: TabColumnProps<K>) {
           className += ' Selected';
         }
         return (
-          <div
-            className={className}
-            onClick={() => props.onChange(tab.name)}
-          ></div>
+          <div className={className} onClick={() => props.onChange(tab.name)}>
+            <FontAwesomeIcon className="Icon" icon={tab.icon} />
+          </div>
         );
       })}
     </div>

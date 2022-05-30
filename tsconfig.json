@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "module": "es2015",
     "jsx": "react-jsx",
     "noImplicitAny": true,
