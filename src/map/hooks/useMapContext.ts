@@ -1,0 +1,13 @@
+import {createContext, useContext} from 'react';
+import MapCanvas from '../MapCanvas';
+
+interface MapContextProps {
+  map: MapCanvas;
+  invalidate: () => void;
+}
+
+export const MapContext = createContext<MapContextProps>(null);
+
+export default function useMapContext(): MapContextProps {
+  return useContext(MapContext);
+}

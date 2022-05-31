@@ -1,21 +1,17 @@
-import {useState} from 'react';
-import MapTabState, {MapCommonProps} from './MapTab';
-import {PaintbrushUi} from './tool/Paintbrush';
 import './Sidebar.css';
+
+import {useState} from 'react';
+import {PaintbrushUi} from './tool/Paintbrush';
 import TabColumn, {TabDef} from './TabColumn';
 import {faMap, faPaintbrush} from '@fortawesome/free-solid-svg-icons';
 import MapSettingsUi from './MapSettings';
 
-interface SidebarProps extends MapCommonProps {
-  tabState: MapTabState;
-}
+interface SidebarProps {}
 
 type Tab = 'map-settings' | 'paintbrush';
 
 export default function Sidebar(props: SidebarProps) {
   const [selected, setSelected] = useState<Tab>('paintbrush');
-
-  const state = props.tabState.state;
 
   const tabs: TabDef<Tab>[] = [
     {
@@ -38,9 +34,9 @@ export default function Sidebar(props: SidebarProps) {
           {(() => {
             switch (selected) {
               case 'map-settings':
-                return <MapSettingsUi state={state} {...props} />;
+                return <MapSettingsUi />;
               case 'paintbrush':
-                return <PaintbrushUi state={state} {...props} />;
+                return <PaintbrushUi />;
             }
           })()}
         </div>

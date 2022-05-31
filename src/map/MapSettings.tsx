@@ -1,14 +1,10 @@
-import {useState} from 'react';
-import {MapCommonProps} from './MapTab';
-import MapEditorState from './State';
+import useMapContext from './hooks/useMapContext';
 
-interface MapSettingsProps extends MapCommonProps {
-  state: MapEditorState;
-}
+interface MapSettingsProps {}
 
 export default function MapSettingsUi(props: MapSettingsProps) {
-  const [width, height] = [props.state.map.width, props.state.map.height];
-
+  const map = useMapContext().map;
+  const [width, height] = [map.state.map.width, map.state.map.height];
   return (
     <div>
       <label>Width:</label>
@@ -18,8 +14,8 @@ export default function MapSettingsUi(props: MapSettingsProps) {
         value={width}
         min={1}
         onChange={(e) => {
-          props.state.map.resize(Number(e.target.value), height);
-          props.invalidate();
+          map.state.map.resize(Number(e.target.value), height);
+          map.invalidate();
         }}
       />
       <br />
@@ -27,11 +23,11 @@ export default function MapSettingsUi(props: MapSettingsProps) {
       <input
         id="number"
         type="number"
-        value={props.state.map.height}
+        value={height}
         min={1}
         onChange={(e) => {
-          props.state.map.resize(width, Number(e.target.value));
-          props.invalidate();
+          map.state.map.resize(width, Number(e.target.value));
+          map.invalidate();
         }}
       />
     </div>

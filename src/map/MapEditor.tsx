@@ -1,13 +1,10 @@
 import './MapEditor.css';
 
-import MapTabState, {MapCommonProps} from './MapTab';
 import MapView from './MapView';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 
-interface MapEditorProps extends MapCommonProps {
-  map: MapTabState;
-}
+interface MapEditorProps {}
 
 /**
  * This is a wrapper around the subcomponents that make up the map
@@ -17,13 +14,13 @@ export default function MapEditor(props: MapEditorProps) {
   return (
     <div className="MapEditor">
       <div className="MapViewContainer">
-        <MapView mapCanvas={props.map.canvas} />
+        <MapView />
       </div>
       <div className="SidebarContainer">
-        <Sidebar tabState={props.map} {...props} />
+        <Sidebar />
       </div>
       <div className="FooterContainer">
-        <Footer state={props.map} />
+        <Footer />
       </div>
     </div>
   );

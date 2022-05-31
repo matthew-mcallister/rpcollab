@@ -1,13 +1,10 @@
 import './Footer.css';
+import useMapContext from './hooks/useMapContext';
 
-import MapTabState from './MapTab';
-
-interface FooterProps {
-  state: MapTabState;
-}
+interface FooterProps {}
 
 export default function Footer(props: FooterProps) {
-  const state = props.state.state;
+  const state = useMapContext().map.state;
   return (
     <div className="Footer">
       <div className="FooterContentContainer">

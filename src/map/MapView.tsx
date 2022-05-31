@@ -1,22 +1,21 @@
 import {useEffect, useRef} from 'react';
-import MapCanvas from './MapCanvas';
+import useMapContext from './hooks/useMapContext';
 import './MapView.css';
 
-interface MapViewProps {
-  mapCanvas: MapCanvas;
-}
+interface MapViewProps {}
 
 /**
  * React component which wraps around a MapCanvas for displaying and
  * manipulating a map.
  */
-export default function MapView({mapCanvas}: MapViewProps) {
+export default function MapView(props: MapViewProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
+  const ctx = useMapContext();
 
   useEffect(() => {
-    mapCanvas.attach(canvas.current);
-    mapCanvas.renderLoop();
-  }, [mapCanvas]);
+    ctx.map.attach(canvas.current);
+    ctx.map.renderLoop();
+  }, [ctx.map]);
 
   function handleResize(entries: ResizeObserverEntry[]) {
     const entry = entries[0];

@@ -1,28 +1,30 @@
-import {useState} from 'react';
 import './App.css';
+
+import {useState} from 'react';
+import {MapContext} from './map/hooks/useMapContext';
+import MapCanvas from './map/MapCanvas';
 import MapEditor from './map/MapEditor';
 import MapModel from './map/MapModel';
-import MapTabState from './map/MapTab';
-
-function invalidate(obj: {[key: string]: any}, path: string) {
-  for (const key of path.split('.')) {
-    obj[key] = {...obj[key]};
-    obj = obj[key];
-  }
-}
+import MapEditorState from './map/State';
 
 function App() {
   const [dummy, setDummy] = useState({});
-  const [map, setMap] = useState(() => new MapTabState(new MapModel(100, 100)));
+  const [map, setMap] = useState(() => {
+    const model = new MapModel(100, 100);
+    const state = new MapEditorState(model);
+    return new MapCanvas(state);
+  });
 
-  function doInvalidate(path?: string) {
+  function invalidate(path?: string) {
     setDummy({});
   }
-  map.canvas.invalidate = doInvalidate;
+  map.invalidate = invalidate;
 
   return (
     <div className="App">
-      <MapEditor map={map} dummy={dummy} invalidate={doInvalidate} />
+      <MapContext.Provider value={{map, invalidate}}>
+        <MapEditor />
+      </MapContext.Provider>
     </div>
   );
 }

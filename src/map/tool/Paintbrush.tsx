@@ -1,7 +1,6 @@
-import {useState} from 'react';
 import ColorPicker from '../../components/ColorPicker';
 import Color from '../../math/Color';
-import {MapCommonProps} from '../MapTab';
+import useMapContext from '../hooks/useMapContext';
 import MapEditorState from '../State';
 import Tool from './Tool';
 
@@ -17,16 +16,15 @@ export default class Paintbrush implements Tool {
   }
 }
 
-interface PaintbrushUiProps extends MapCommonProps {
-  state: MapEditorState;
-}
+interface PaintbrushUiProps {}
 
 export function PaintbrushUi(props: PaintbrushUiProps) {
-  const paintbrush = props.state.toolbox.paintbrush;
+  const ctx = useMapContext();
+  const paintbrush = ctx.map.state.toolbox.paintbrush;
 
   function changeColor(color: Color) {
     paintbrush.color = color;
-    props.invalidate('toolbox.paintbrush');
+    ctx.invalidate();
   }
 
   return (
