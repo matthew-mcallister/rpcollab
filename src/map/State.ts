@@ -4,6 +4,11 @@ import {Xform2} from '../math/Xform';
 import MapModel, {Cell} from './MapModel';
 import Toolbox from './tool/Toolbox';
 
+const ZEROES = new Array(15);
+for (let i = 0; i < ZEROES.length; i += 1) {
+  ZEROES[i] = 0;
+}
+
 /**
  * This represents the main state of the map canvas controller. Multiple
  * sub-controllers hold internal bits of state for themselves, but they
@@ -24,8 +29,27 @@ export default class MapEditorState {
   // Tool state
   public toolbox = new Toolbox();
 
+  // Performance, metrics, status
+  public frame: number = 0;
+  private _fps: number = 0;
+  private frameTimes: number[];
+
   constructor(map: MapModel) {
     this.map = map;
+    this.frameTimes = [...ZEROES];
+  }
+
+  public fps() {
+    if (this.frame % this.frameTimes.length === 0) {
+      this._fps =
+        this.frameTimes.reduce((a, b) => a + 1000 / b, 0) /
+        this.frameTimes.length;
+    }
+    return this._fps;
+  }
+
+  public addFrame(time: number) {
+    this.frameTimes[this.frame % this.frameTimes.length] = time;
   }
 
   /**

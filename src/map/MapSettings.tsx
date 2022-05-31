@@ -1,17 +1,13 @@
 import {useState} from 'react';
+import {MapCommonProps} from './MapTab';
 import MapEditorState from './State';
 
-interface MapSettingsProps {
+interface MapSettingsProps extends MapCommonProps {
   state: MapEditorState;
 }
 
 export default function MapSettingsUi(props: MapSettingsProps) {
   const [width, height] = [props.state.map.width, props.state.map.height];
-
-  const [dummy, setDummy] = useState(0);
-  function render() {
-    setDummy(dummy + 1);
-  }
 
   return (
     <div>
@@ -23,7 +19,7 @@ export default function MapSettingsUi(props: MapSettingsProps) {
         min={1}
         onChange={(e) => {
           props.state.map.resize(Number(e.target.value), height);
-          render();
+          props.invalidate();
         }}
       />
       <br />
@@ -35,7 +31,7 @@ export default function MapSettingsUi(props: MapSettingsProps) {
         min={1}
         onChange={(e) => {
           props.state.map.resize(width, Number(e.target.value));
-          render();
+          props.invalidate();
         }}
       />
     </div>

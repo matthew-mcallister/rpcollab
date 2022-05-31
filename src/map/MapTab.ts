@@ -13,3 +13,8 @@ export default class MapTabState {
     this.canvas = new MapCanvas(this.state);
   }
 }
+
+export interface MapCommonProps {
+  dummy: {};
+  invalidate: (path?: string) => void;
+}

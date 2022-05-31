@@ -17,13 +17,14 @@ interface TabColumnProps<K = string> {
 export default function TabColumn<K>(props: TabColumnProps<K>) {
   return (
     <div className="TabColumn">
-      {props.tabs.map((tab) => {
+      {props.tabs.map((tab, i) => {
         let className = 'Tab';
         if (tab.name === props.selected) {
           className += ' Selected';
         }
         return (
           <div
+            key={i}
             className={className}
             onClick={() => props.onChange(tab.name)}
             title={tab.tooltip}

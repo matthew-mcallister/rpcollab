@@ -1,0 +1,25 @@
+.Footer {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  background-color: #222222;
+  color: #fff;
+  font-size: 18px;
+  padding: 0 10px;
+}
+
+.FooterContentContainer {
+  height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.FooterLeft {
+}
+
+.FooterRight {
+  margin-left: auto;
+}

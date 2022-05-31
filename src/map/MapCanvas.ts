@@ -15,6 +15,7 @@ import MapEditorState from './State';
 export default class MapCanvas {
   public map: MapModel;
   public state: MapEditorState;
+  public invalidate: (path?: string) => void = null;
 
   private ctx: CanvasRenderingContext2D | null = null;
   private controller: MapController;
@@ -151,11 +152,19 @@ export default class MapCanvas {
   public render(): void {
     const canvas = this.ctx.canvas;
 
+    const start = performance.now();
+
     this.ctx.fillStyle = '#444';
     this.ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     this.xform = this.state.worldToCanvas();
     this.drawGrid();
+
+    const end = performance.now();
+
+    this.state.frame += 1;
+    this.state.addFrame(end - start);
+    this.invalidate();
   }
 
   public renderLoop(): void {
