@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import useMapContext from './hooks/useMapContext';
 import MapModel from './MapModel';
+import SvgRenderer from './SvgRender';
 
 interface MapSettingsProps {}
 
@@ -32,6 +33,17 @@ export default function MapSettingsUi(props: MapSettingsProps) {
     const link = document.createElement('a');
     link.href = url;
     link.download = 'export.map';
+    link.click();
+    link.remove();
+  }
+
+  async function doExportSvg() {
+    const blob = new SvgRenderer(map).render();
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'export.svg';
     link.click();
     link.remove();
   }
@@ -78,6 +90,9 @@ export default function MapSettingsUi(props: MapSettingsProps) {
       </div>
       <button id="export-button" onClick={doExport}>
         Export
+      </button>
+      <button id="export-svg-button" onClick={doExportSvg}>
+        Export SVG
       </button>
     </div>
   );
