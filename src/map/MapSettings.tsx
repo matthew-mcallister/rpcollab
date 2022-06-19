@@ -22,11 +22,17 @@ export default function MapSettingsUi(props: MapSettingsProps) {
     };
   }
 
-  function doExport() {
+  async function doExport() {
     const text = JSON.stringify(map);
     const file = new Blob([text], {type: 'application/x-hexmap'});
     const url = URL.createObjectURL(file);
-    window.open(url);
+
+    // Hack to rename the exported file to export.map
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'export.map';
+    link.click();
+    link.remove();
   }
 
   return (
