@@ -14,6 +14,10 @@ export class Cell {
     this.y = y;
     this.color = color;
   }
+
+  public deserialize(data: any): void {
+    Object.assign(this.color, data.color);
+  }
 }
 
 /**
@@ -30,6 +34,15 @@ export default class MapModel {
     this.width = this.height = 0;
     this.cells = [[]];
     this.resize(width, height);
+  }
+
+  public deserialize(object: any): void {
+    this.resize(object.width, object.height);
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        this.cells[x][y].deserialize(object.cells[x][y]);
+      }
+    }
   }
 
   resize(width: number, height: number) {

@@ -37,7 +37,7 @@ label {
   padding-right: 10px;
 }
 
-input {
+.Input {
   color: white;
   background-color: #444;
   margin-bottom: 10px;

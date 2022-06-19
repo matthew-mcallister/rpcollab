@@ -9,11 +9,15 @@ import MapEditorState from './map/State';
 
 function App() {
   const [dummy, setDummy] = useState({});
-  const [map, setMap] = useState(() => {
+  const [map, _] = useState(() => {
     const model = new MapModel(100, 100);
     const state = new MapEditorState(model);
     return new MapCanvas(state);
   });
+
+  function importMap(newMap: any) {
+    map.map.deserialize(newMap);
+  }
 
   function invalidate(path?: string) {
     setDummy({});
@@ -22,7 +26,7 @@ function App() {
 
   return (
     <div className="App">
-      <MapContext.Provider value={{map, invalidate}}>
+      <MapContext.Provider value={{map, importMap, invalidate}}>
         <MapEditor />
       </MapContext.Provider>
     </div>

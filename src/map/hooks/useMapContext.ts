@@ -3,6 +3,7 @@ import MapCanvas from '../MapCanvas';
 
 interface MapContextProps {
   map: MapCanvas;
+  importMap: (newMap: any) => void;
   invalidate: () => void;
 }
 
