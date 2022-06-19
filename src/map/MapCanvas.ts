@@ -140,7 +140,11 @@ export default class MapCanvas {
         const cell = this.map.cells[j][i];
         let color = cell.color;
         if (this.state.highlightedCell === cell) {
-          color = color.lighten(0.2);
+          if (color.lightness() > 0.8) {
+            color = color.darken(0.1);
+          } else {
+            color = color.lighten(0.2);
+          }
         }
 
         const strokeColor = new Color(0, 0, 0);

@@ -72,11 +72,25 @@ export default class Color {
     return [h, s, v];
   }
 
+  public lightness() {
+    const max = Math.max(this.r, this.g, this.b);
+    const min = Math.min(this.r, this.g, this.b);
+    return (min + max) / 2;
+  }
+
   public lighten(amount: number): Color {
     return new Color(
       this.r + amount * (1 - this.r),
       this.g + amount * (1 - this.g),
       this.b + amount * (1 - this.b)
+    );
+  }
+
+  public darken(amount: number): Color {
+    return new Color(
+      this.r - amount * this.r,
+      this.g - amount * this.g,
+      this.b - amount * this.b
     );
   }
 }
