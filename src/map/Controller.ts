@@ -27,10 +27,13 @@ class EventHandler {
     }
   }
 
-  onDragging(pos: Vector2): void {
+  onMouseMove(pos: Vector2): void {
     this.state.cursorWorldPos = this.state.canvasToWorld().apply(pos);
     const p = this.state.cursorWorldPos.mul(1 / this.state.scale);
     this.state.highlightedCell = this.state.map.cellAtPosition(p);
+  }
+
+  onDragging(pos: Vector2): void {
     this.state.toolbox.currentTool().apply(this.state);
   }
 }
@@ -126,6 +129,8 @@ class CursorController extends Controller {
   }
 
   public onMouseMove(e: MouseEvent): void {
+    const pos = new Vector2(e.offsetX, e.offsetY);
+    this.handler.onMouseMove(pos);
     this.applyTool(e);
   }
 }

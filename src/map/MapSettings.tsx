@@ -11,6 +11,7 @@ export default function MapSettingsUi(props: MapSettingsProps) {
 
   const [file, setFile] = useState<Blob>(null);
 
+  // TODO: Use file picker API
   async function doImport() {
     if (!file) return;
     const reader = new FileReader();
