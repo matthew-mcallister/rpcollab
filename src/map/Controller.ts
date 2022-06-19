@@ -2,13 +2,47 @@ import {Vector2} from '../math/Vector';
 import MapEditorState from './State';
 
 /**
- * This is the base class for other controllers.
+ * Provides an extra layer of indirection to decouple JS event system
+ * from application-level event logic.
  */
-export class Controller {
-  public state: MapEditorState;
+class EventHandler {
+  state: MapEditorState;
 
   constructor(state: MapEditorState) {
     this.state = state;
+  }
+
+  onPanning(delta: Vector2): void {
+    // TODO: Preserve momentum when releasing?
+    const camera = this.state.camera;
+    camera.position = camera.position.sub(delta.mul(camera.zoom));
+  }
+
+  // TODO: This sucks on trackpad.
+  onZooming(delta: number): void {
+    if (delta < 0) {
+      this.state.camera.zoom *= (16 - 1) / 16;
+    } else {
+      this.state.camera.zoom *= (16 + 1) / 16;
+    }
+  }
+
+  onDragging(pos: Vector2): void {
+    this.state.cursorWorldPos = this.state.canvasToWorld().apply(pos);
+    const p = this.state.cursorWorldPos.mul(1 / this.state.scale);
+    this.state.highlightedCell = this.state.map.cellAtPosition(p);
+    this.state.toolbox.currentTool().apply(this.state);
+  }
+}
+
+/**
+ * This is the base class for other controllers.
+ */
+export class Controller {
+  handler: EventHandler;
+
+  constructor(handler: EventHandler) {
+    this.handler = handler;
   }
 
   public onMouseEnter(e: MouseEvent): void {}
@@ -19,16 +53,14 @@ export class Controller {
   public onWheel(e: WheelEvent): void {}
 }
 
+// TODO: Combine this with cursor controller
 class CameraController extends Controller {
+  // TODO: Not sure if this variable is needed since events include the
+  // current button state
   public dragging: boolean = false;
 
-  constructor(state: MapEditorState) {
-    super(state);
-  }
-
-  /** Factor to convert mouse position to screen position. */
-  zoomFactor(): number {
-    return (2 * window.devicePixelRatio) / this.state.camera.zoom;
+  constructor(handler: EventHandler) {
+    super(handler);
   }
 
   public onMouseLeave(event: MouseEvent): void {
@@ -49,37 +81,30 @@ class CameraController extends Controller {
 
   public onMouseMove(event: MouseEvent): void {
     if (this.dragging) {
-      // TODO: IDK what the exact formula is but this works for me
-      this.state.camera.position.x -= event.movementX / this.zoomFactor();
-      this.state.camera.position.y -= event.movementY / this.zoomFactor();
+      const ratio = 2 * window.devicePixelRatio;
+      const [dx, dy] = [event.movementX / ratio, event.movementY / ratio];
+      this.handler.onPanning(new Vector2(dx, dy));
     }
-    // TODO: Preserve momentum when releasing
   }
 
   public onWheel(event: WheelEvent): void {
-    // TODO: This sucks on trackpad.
-    if (event.deltaY < 0) {
-      this.state.camera.zoom *= (16 - 1) / 16;
-    } else {
-      this.state.camera.zoom *= (16 + 1) / 16;
-    }
+    this.handler.onZooming(event.deltaY);
   }
 }
 
-/**
- * This class manages how the cursor interacts with the map and objects
- * in it.
- */
 class CursorController extends Controller {
+  // TODO: Not sure if this variable is needed since events include the
+  // current button state
   clicking: boolean;
 
-  constructor(state: MapEditorState) {
-    super(state);
+  constructor(handler: EventHandler) {
+    super(handler);
   }
 
-  private applyTool() {
-    if (this.clicking) {
-      this.state.toolbox.currentTool().apply(this.state);
+  private applyTool(event: MouseEvent) {
+    if (this.clicking && !event.shiftKey) {
+      const pos = new Vector2(event.offsetX, event.offsetY);
+      this.handler.onDragging(pos);
     }
   }
 
@@ -87,7 +112,7 @@ class CursorController extends Controller {
     if (e.button === 0) {
       this.clicking = true;
     }
-    this.applyTool();
+    this.applyTool(e);
   }
 
   public onMouseUp(e: MouseEvent): void {
@@ -100,13 +125,8 @@ class CursorController extends Controller {
     this.clicking = false;
   }
 
-  public onMouseMove(event: MouseEvent): void {
-    const pos = new Vector2(event.offsetX, event.offsetY);
-    this.state.cursorWorldPos = this.state.canvasToWorld().apply(pos);
-    this.state.highlightedCell = this.state.map.cellAtPosition(
-      this.state.cursorWorldPos.mul(1 / this.state.scale)
-    );
-    this.applyTool();
+  public onMouseMove(e: MouseEvent): void {
+    this.applyTool(e);
   }
 }
 
@@ -115,8 +135,9 @@ export class MapController {
   public cursorController: CursorController;
 
   constructor(state: MapEditorState) {
-    this.cameraController = new CameraController(state);
-    this.cursorController = new CursorController(state);
+    const handler = new EventHandler(state);
+    this.cameraController = new CameraController(handler);
+    this.cursorController = new CursorController(handler);
   }
 
   public controllers(): Controller[] {
