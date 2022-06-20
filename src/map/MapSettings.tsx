@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import useMapContext from './hooks/useMapContext';
 import MapModel from './MapModel';
-import SvgRenderer from './SvgRender';
+import render_svg from './SvgRender';
 
 interface MapSettingsProps {}
 
@@ -38,7 +38,10 @@ export default function MapSettingsUi(props: MapSettingsProps) {
   }
 
   async function doExportSvg() {
-    const blob = new SvgRenderer(map).render();
+    const text = render_svg(map);
+    const blob = new Blob([text], {
+      type: 'image/svg+xml;charset=utf-8',
+    });
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
