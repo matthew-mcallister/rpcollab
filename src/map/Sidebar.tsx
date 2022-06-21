@@ -12,6 +12,7 @@ type Tab = 'map-settings' | 'paintbrush';
 
 export default function Sidebar(props: SidebarProps) {
   const [selected, setSelected] = useState<Tab>('paintbrush');
+  const [collapsed, setCollapsed] = useState(false);
 
   const tabs: TabDef<Tab>[] = [
     {
@@ -28,18 +29,28 @@ export default function Sidebar(props: SidebarProps) {
 
   return (
     <div className="Sidebar">
-      <TabColumn<Tab> selected={selected} onChange={setSelected} tabs={tabs} />
+      <div className="TabColumn">
+        <TabColumn<Tab>
+          selected={selected}
+          onChange={setSelected}
+          tabs={tabs}
+          collapsed={collapsed}
+          onCollapse={() => setCollapsed(!collapsed)}
+        />
+      </div>
       <div className="ContentColumn">
-        <div className="ContentContainer">
-          {(() => {
-            switch (selected) {
-              case 'map-settings':
-                return <MapSettingsUi />;
-              case 'paintbrush':
-                return <PaintbrushUi />;
-            }
-          })()}
-        </div>
+        {!collapsed && (
+          <div className="ContentContainer">
+            {(() => {
+              switch (selected) {
+                case 'map-settings':
+                  return <MapSettingsUi />;
+                case 'paintbrush':
+                  return <PaintbrushUi />;
+              }
+            })()}
+          </div>
+        )}
       </div>
     </div>
   );
