@@ -24,6 +24,9 @@ export class Cell {
  * Models a map from the frontend perspective. MapModel provides methods
  * for accessing and mutating the map while MapCanvas is responsible
  * for allowing the user to interact with the map.
+ *
+ * The map cells are stored column-major, so indexing is horizontal
+ * first, then vertical.
  */
 export default class MapModel {
   public width: number;
@@ -34,6 +37,10 @@ export default class MapModel {
     this.width = this.height = 0;
     this.cells = [[]];
     this.resize(width, height);
+  }
+
+  public get(x: number, y: number): Cell | undefined {
+    return (this.cells[x] || [])[y];
   }
 
   public deserialize(object: any): void {

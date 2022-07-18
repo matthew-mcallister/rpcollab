@@ -31,7 +31,11 @@ export function PaintbrushUi(props: PaintbrushUiProps) {
     <div>
       <h3>Paintbrush</h3>
       <label>Color:</label>
-      <ColorPicker color={paintbrush.color} onChange={changeColor} />
+      <ColorPicker
+        className="Input"
+        color={paintbrush.color}
+        onChange={changeColor}
+      />
     </div>
   );
 }

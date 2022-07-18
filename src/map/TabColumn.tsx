@@ -1,15 +1,16 @@
+import './TabColumn.css';
 import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 import {faAngleLeft, faAngleRight} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import './TabColumn.css';
+import {ToolName} from './tool/Toolbox';
 
 export interface TabDef<K> {
-  name: K;
   icon?: IconDefinition;
   tooltip?: string;
+  value?: K;
 }
 
-interface TabColumnProps<K = string> {
+interface TabColumnProps<K> {
   selected: K;
   tabs: TabDef<K>[];
   onChange(selected: K): void;
@@ -23,14 +24,14 @@ export default function TabColumn<K>(props: TabColumnProps<K>) {
       <div className="TabSection">
         {props.tabs.map((tab, i) => {
           let className = 'Tab';
-          if (tab.name === props.selected) {
+          if (tab.value === props.selected) {
             className += ' Selected';
           }
           return (
             <div
               key={i}
               className={className}
-              onClick={() => props.onChange(tab.name)}
+              onClick={() => props.onChange(tab.value)}
               title={tab.tooltip}
             >
               <FontAwesomeIcon className="Icon" icon={tab.icon} />

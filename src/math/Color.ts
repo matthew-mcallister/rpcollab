@@ -13,6 +13,10 @@ export default class Color {
     this.b = b;
   }
 
+  public equals(other: Color): boolean {
+    return this.r === other.r && this.g === other.g && this.b === other.b;
+  }
+
   public toHex(options: ToHexOptions = {}): string {
     const [r, g, b] = [
       Math.floor(this.r * 255),

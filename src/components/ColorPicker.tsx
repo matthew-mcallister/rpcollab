@@ -3,6 +3,7 @@ import Color from '../math/Color';
 export interface ColorPickerProps {
   color: Color;
   onChange?(color: Color): any;
+  className?: string;
 }
 
 export default function ColorPicker(props: ColorPickerProps) {
@@ -19,6 +20,7 @@ export default function ColorPicker(props: ColorPickerProps) {
         type="color"
         value={props.color.toHex({prefix: true})}
         onChange={handleChange}
+        className={props.className}
       />
     </>
   );
